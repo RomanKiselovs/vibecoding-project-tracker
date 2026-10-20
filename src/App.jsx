@@ -3,6 +3,7 @@ import { STAGES, TEAM, STORAGE_KEYS } from './lib/constants.js';
 import { seedTasks } from './lib/seed.js';
 import Board from './components/Board.jsx';
 import TaskModal, { blankTask } from './components/TaskModal.jsx';
+import Toast, { useToast } from './components/Toast.jsx';
 
 /**
  * VibeTrack — Vibecoding Project Tracker.
@@ -52,6 +53,7 @@ export default function App() {
   const [tasks, setTasks] = useLocalStorage(STORAGE_KEYS.tasks, seedTasks);
   // { task, isNew } while the modal is open, otherwise null.
   const [editing, setEditing] = useState(null);
+  const [toast, showToast] = useToast();
 
   const openNew = (status = 'todo') => setEditing({ task: blankTask(status), isNew: true });
   const openEdit = (task) => setEditing({ task, isNew: false });
@@ -64,6 +66,13 @@ export default function App() {
         : [...all, task]
     );
     close();
+  };
+
+  // M7 task-owner: hand a task to a teammate with one dropdown.
+  const handoff = (task, name) => {
+    if (name === task.assignee) return;
+    setTasks((all) => all.map((t) => (t.id === task.id ? { ...t, assignee: name } : t)));
+    showToast(`Handed off to ${name}. They've got it.`);
   };
 
   const deleteTask = (id) => {
@@ -91,7 +100,7 @@ export default function App() {
         </button>
       </header>
 
-      <Board tasks={tasks} onOpen={openEdit} />
+      <Board tasks={tasks} onOpen={openEdit} onHandoff={handoff} />
 
       {editing && (
         <TaskModal
@@ -103,6 +112,8 @@ export default function App() {
           onClose={close}
         />
       )}
+
+      <Toast toast={toast} />
     </div>
   );
 }
