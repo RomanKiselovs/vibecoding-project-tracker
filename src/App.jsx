@@ -116,7 +116,7 @@ export default function App() {
             <span className="text-brand-primary">Vibe</span>
             <span className="-ml-2 text-brand-accent">Track</span>
           </h1>
-          <p className="text-sm text-ink-muted">Vibecoding Project Tracker</p>
+          <p className="text-sm text-ink-muted">Every task remembers the prompt that built it.</p>
         </div>
         <div className="flex items-center gap-2">
         <button

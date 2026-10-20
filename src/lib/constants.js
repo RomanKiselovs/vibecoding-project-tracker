@@ -10,7 +10,7 @@ export const STAGES = [
 ];
 
 // The three names from PRD §8. They are the only valid values for `Task.assignee`.
-export const TEAM = ['Teammate A', 'Teammate B', 'Teammate C'];
+export const TEAM = ['Romans Kiselovs', 'Teammate B', 'Teammate C'];
 
 export const TASK_TYPES = [
   { id: 'feature', label: 'Feature' },
