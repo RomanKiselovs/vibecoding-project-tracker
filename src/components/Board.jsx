@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { STAGES } from '../lib/constants.js';
 import TaskCard from './TaskCard.jsx';
 
 /** The four-column Kanban board (M4 data-model). */
-export default function Board({ tasks, onOpen, onHandoff, onCopyPrompt }) {
+export default function Board({ tasks, onOpen, onHandoff, onCopyPrompt, onMove }) {
+  // M12: drag a card to another column; the status dropdown in the modal is the fallback.
+  const [dragOver, setDragOver] = useState(null);
+
   return (
     <main className="grid grid-cols-4 gap-4">
       {STAGES.map((stage) => {
@@ -10,7 +14,22 @@ export default function Board({ tasks, onOpen, onHandoff, onCopyPrompt }) {
         return (
           <section
             key={stage.id}
-            className="flex min-h-[24rem] flex-col rounded-xl bg-stone-200/50 p-3"
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(stage.id);
+            }}
+            onDragLeave={(e) => !e.currentTarget.contains(e.relatedTarget) && setDragOver(null)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(null);
+              const id = e.dataTransfer.getData('text/task-id');
+              if (id) onMove(id, stage.id);
+            }}
+            className={`flex min-h-[24rem] flex-col rounded-xl p-3 transition ${
+              dragOver === stage.id
+                ? 'bg-brand-accent/10 outline-dashed outline-2 outline-brand-accent'
+                : 'bg-stone-200/50'
+            }`}
           >
             <header className="mb-3 flex items-center justify-between px-1">
               <h2 className="font-heading text-xs font-semibold uppercase tracking-wider text-ink">

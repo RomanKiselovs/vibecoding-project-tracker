@@ -20,6 +20,11 @@ export default function TaskCard({ task, onOpen, onHandoff, onCopyPrompt }) {
     <article
       role="button"
       tabIndex={0}
+      draggable
+      onDragStart={(e) => {
+        e.dataTransfer.setData('text/task-id', task.id);
+        e.dataTransfer.effectAllowed = 'move';
+      }}
       onClick={() => onOpen(task)}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onOpen(task))}
       className={`group w-full cursor-pointer rounded-lg border border-l-4 border-stone-200 ${type.stripe} ${due.card} p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary`}

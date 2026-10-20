@@ -5,7 +5,8 @@ import AnchorBoard, { DEFAULT_ANCHORS } from './components/AnchorBoard.jsx';
 import Board from './components/Board.jsx';
 import TaskModal, { blankTask } from './components/TaskModal.jsx';
 import Toast, { useToast } from './components/Toast.jsx';
-import { copyText, toPromptMarkdown } from './lib/prompt.js';
+import { copyText, toPromptMarkdown, toStandupMarkdown } from './lib/prompt.js';
+import { MegaphoneIcon } from './components/Icons.jsx';
 
 /**
  * VibeTrack — Vibecoding Project Tracker.
@@ -87,6 +88,20 @@ export default function App() {
     showToast(ok ? 'Copied. Paste it into your AI and keep vibing.' : "Couldn't reach the clipboard — try again.", 'accent');
   };
 
+  // M12 secret-sauce: drag-and-drop + one-click standup for the whole team
+  const moveTask = (id, status) => {
+    const task = tasks.find((t) => t.id === id);
+    if (!task || task.status === status) return;
+    setTasks((all) => all.map((t) => (t.id === id ? { ...t, status } : t)));
+    const label = STAGES.find((s) => s.id === status)?.label;
+    showToast(status === 'done' ? `Done: ${task.title}. Nice.` : `Moved to ${label}.`);
+  };
+
+  const copyStandup = async () => {
+    const ok = await copyText(toStandupMarkdown(tasks, TEAM));
+    showToast(ok ? 'Standup copied. Drop it in the team chat.' : "Couldn't reach the clipboard — try again.", 'accent');
+  };
+
   const deleteTask = (id) => {
     setTasks((all) => all.filter((t) => t.id !== id));
     close();
@@ -103,6 +118,16 @@ export default function App() {
           </h1>
           <p className="text-sm text-ink-muted">Vibecoding Project Tracker</p>
         </div>
+        <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={copyStandup}
+          title="Copy a per-teammate standup of the whole board"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-brand-primary/20 bg-surface-card px-3 py-2 text-sm font-medium text-brand-primary transition hover:border-brand-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+        >
+          <MegaphoneIcon />
+          Copy standup
+        </button>
         <button
           type="button"
           onClick={() => openNew()}
@@ -110,11 +135,12 @@ export default function App() {
         >
           + New task
         </button>
+        </div>
       </header>
 
       <AnchorBoard anchors={anchors} onChange={setAnchors} />
 
-      <Board tasks={tasks} onOpen={openEdit} onHandoff={handoff} onCopyPrompt={copyPrompt} />
+      <Board tasks={tasks} onOpen={openEdit} onHandoff={handoff} onCopyPrompt={copyPrompt} onMove={moveTask} />
 
       {editing && (
         <TaskModal

@@ -65,3 +65,41 @@ export async function copyText(text) {
     return ok;
   }
 }
+
+/**
+ * M12 secret-sauce: turn the whole board into a per-teammate standup
+ * (done / doing / in review / up next / overdue) ready for the team chat or an AI.
+ */
+export function toStandupMarkdown(tasks, team) {
+  const lines = [`# Standup · ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}`, ''];
+  const item = (t) => `  - ${t.type === 'bug' ? '🐞' : '✨'} ${t.title}${t.dueDate && t.status !== 'done' ? ` _(${dueLabel(t)})_` : ''}`;
+  for (const name of team) {
+    const mine = tasks.filter((t) => t.assignee === name);
+    lines.push(`## ${name}`);
+    if (!mine.length) {
+      lines.push('- Nothing assigned.', '');
+      continue;
+    }
+    const groups = [
+      ['Done', mine.filter((t) => t.status === 'done')],
+      ['Doing', mine.filter((t) => t.status === 'in-progress')],
+      ['In review', mine.filter((t) => t.status === 'review')],
+      ['Up next', mine.filter((t) => t.status === 'todo')],
+    ];
+    for (const [label, list] of groups) {
+      if (!list.length) continue;
+      lines.push(`- **${label}:**`);
+      list.forEach((t) => lines.push(item(t)));
+    }
+    lines.push('');
+  }
+  const late = tasks.filter((t) => t.status !== 'done' && t.dueDate && dueLabel(t).includes('late'));
+  if (late.length) {
+    lines.push('## ⚠️ Overdue');
+    late.forEach((t) => lines.push(`- ${t.title} — ${t.assignee} (${dueLabel(t)})`));
+    lines.push('');
+  }
+  const done = tasks.filter((t) => t.status === 'done').length;
+  lines.push(`_Progress: ${done}/${tasks.length} tasks done._`);
+  return lines.join('\n');
+}
