@@ -4,6 +4,7 @@ import { seedTasks } from './lib/seed.js';
 import Board from './components/Board.jsx';
 import TaskModal, { blankTask } from './components/TaskModal.jsx';
 import Toast, { useToast } from './components/Toast.jsx';
+import { copyText, toPromptMarkdown } from './lib/prompt.js';
 
 /**
  * VibeTrack — Vibecoding Project Tracker.
@@ -78,6 +79,12 @@ export default function App() {
     showToast(`Handed off to ${name}. They've got it.`);
   };
 
+  // M10 copy-prompt
+  const copyPrompt = async (task) => {
+    const ok = await copyText(toPromptMarkdown(task));
+    showToast(ok ? 'Copied. Paste it into your AI and keep vibing.' : "Couldn't reach the clipboard — try again.", 'accent');
+  };
+
   const deleteTask = (id) => {
     setTasks((all) => all.filter((t) => t.id !== id));
     close();
@@ -103,7 +110,7 @@ export default function App() {
         </button>
       </header>
 
-      <Board tasks={tasks} onOpen={openEdit} onHandoff={handoff} />
+      <Board tasks={tasks} onOpen={openEdit} onHandoff={handoff} onCopyPrompt={copyPrompt} />
 
       {editing && (
         <TaskModal
@@ -113,6 +120,7 @@ export default function App() {
           onSave={saveTask}
           onDelete={deleteTask}
           onClose={close}
+          onCopyPrompt={copyPrompt}
         />
       )}
 

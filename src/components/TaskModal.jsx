@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CONTEXT_TOOLS, STAGES, TEAM, TASK_TYPES } from '../lib/constants.js';
 import { newId, todayISO } from '../lib/dates.js';
+import { ClipboardIcon } from './Icons.jsx';
 
 const inputCls =
   'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-ink placeholder:text-stone-400 focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20';
@@ -42,7 +43,7 @@ function finalise(draft, original) {
  * Add / edit / delete modal (M5 crud-modal).
  * `task` is the task being edited; `isNew` switches the copy and hides Delete.
  */
-export default function TaskModal({ task, isNew, onSave, onDelete, onClose }) {
+export default function TaskModal({ task, isNew, onSave, onDelete, onClose, onCopyPrompt }) {
   const [draft, setDraft] = useState(task);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -212,7 +213,15 @@ export default function TaskModal({ task, isNew, onSave, onDelete, onClose }) {
               ))}
           </div>
           <div className="flex items-center gap-2">
-            {/* MODAL_EXTRA_ACTIONS */}
+            {/* M10 copy-prompt — copies the current (unsaved) draft */}
+            <button
+              type="button"
+              onClick={() => onCopyPrompt(finalise(draft, task))}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-accent px-3 py-2 text-sm font-medium text-brand-accent hover:bg-brand-accent hover:text-white"
+            >
+              <ClipboardIcon />
+              Copy as Prompt Context
+            </button>
             <button
               type="button"
               onClick={onClose}

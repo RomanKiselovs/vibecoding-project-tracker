@@ -2,7 +2,7 @@ import { TEAM } from '../lib/constants.js';
 import { formatShort } from '../lib/dates.js';
 import { DUE_STYLE, dueLabel, dueState } from '../lib/due.js';
 import Avatar from './Avatar.jsx';
-import { BugIcon, ClockIcon, SparklesIcon } from './Icons.jsx';
+import { BugIcon, ClipboardIcon, ClockIcon, SparklesIcon } from './Icons.jsx';
 
 // M6 tag-style: feature vs. bug visual distinction.
 const TYPE_STYLE = {
@@ -11,7 +11,7 @@ const TYPE_STYLE = {
 };
 
 /** One task on the board. */
-export default function TaskCard({ task, onOpen, onHandoff }) {
+export default function TaskCard({ task, onOpen, onHandoff, onCopyPrompt }) {
   const type = TYPE_STYLE[task.type] ?? TYPE_STYLE.feature;
   const due = DUE_STYLE[dueState(task)]; // M8 due-tint
   const stop = (e) => e.stopPropagation();
@@ -24,12 +24,28 @@ export default function TaskCard({ task, onOpen, onHandoff }) {
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onOpen(task))}
       className={`group w-full cursor-pointer rounded-lg border border-l-4 border-stone-200 ${type.stripe} ${due.card} p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary`}
     >
-      <span
-        className={`mb-2 inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] font-medium ${type.badge}`}
-      >
-        <type.Icon width={12} height={12} />
-        {type.label}
-      </span>
+      <div className="mb-2 flex items-start justify-between gap-2">
+        <span
+          className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] font-medium ${type.badge}`}
+        >
+          <type.Icon width={12} height={12} />
+          {type.label}
+        </span>
+        {/* M10 copy-prompt: one click, straight from the board */}
+        <button
+          type="button"
+          title="Copy as Prompt Context"
+          aria-label="Copy as Prompt Context"
+          onClick={(e) => {
+            e.stopPropagation();
+            onCopyPrompt(task);
+          }}
+          onKeyDown={stop}
+          className="rounded p-1 text-ink-muted opacity-0 transition hover:bg-brand-accent hover:text-white focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent group-hover:opacity-100"
+        >
+          <ClipboardIcon />
+        </button>
+      </div>
       <h3 className="text-sm font-medium leading-snug text-ink">{task.title}</h3>
       {task.description && (
         <p className="mt-1 line-clamp-2 text-xs text-ink-muted">{task.description}</p>

@@ -2,7 +2,7 @@ import { STAGES } from '../lib/constants.js';
 import TaskCard from './TaskCard.jsx';
 
 /** The four-column Kanban board (M4 data-model). */
-export default function Board({ tasks, onOpen, onHandoff }) {
+export default function Board({ tasks, onOpen, onHandoff, onCopyPrompt }) {
   return (
     <main className="grid grid-cols-4 gap-4">
       {STAGES.map((stage) => {
@@ -20,7 +20,13 @@ export default function Board({ tasks, onOpen, onHandoff }) {
             </header>
             <div className="flex flex-1 flex-col gap-2">
               {items.map((task) => (
-                <TaskCard key={task.id} task={task} onOpen={onOpen} onHandoff={onHandoff} />
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onOpen={onOpen}
+                  onHandoff={onHandoff}
+                  onCopyPrompt={onCopyPrompt}
+                />
               ))}
               {items.length === 0 && (
                 <p className="flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-stone-300 p-4 text-center text-xs text-ink-muted">
