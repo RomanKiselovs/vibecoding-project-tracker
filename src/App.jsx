@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { STAGES, TEAM, STORAGE_KEYS } from './lib/constants.js';
 import { seedTasks } from './lib/seed.js';
 import Board from './components/Board.jsx';
+import TaskModal, { blankTask } from './components/TaskModal.jsx';
 
 /**
  * VibeTrack — Vibecoding Project Tracker.
@@ -49,6 +50,26 @@ export function useLocalStorage(key, initialValue) {
 
 export default function App() {
   const [tasks, setTasks] = useLocalStorage(STORAGE_KEYS.tasks, seedTasks);
+  // { task, isNew } while the modal is open, otherwise null.
+  const [editing, setEditing] = useState(null);
+
+  const openNew = (status = 'todo') => setEditing({ task: blankTask(status), isNew: true });
+  const openEdit = (task) => setEditing({ task, isNew: false });
+  const close = () => setEditing(null);
+
+  const saveTask = (task) => {
+    setTasks((all) =>
+      all.some((t) => t.id === task.id)
+        ? all.map((t) => (t.id === task.id ? task : t))
+        : [...all, task]
+    );
+    close();
+  };
+
+  const deleteTask = (id) => {
+    setTasks((all) => all.filter((t) => t.id !== id));
+    close();
+  };
 
   return (
     <div className="mx-auto min-h-screen max-w-7xl p-6">
@@ -61,9 +82,27 @@ export default function App() {
           </h1>
           <p className="text-sm text-ink-muted">Vibecoding Project Tracker</p>
         </div>
+        <button
+          type="button"
+          onClick={() => openNew()}
+          className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+        >
+          + New task
+        </button>
       </header>
 
-      <Board tasks={tasks} onOpen={() => {}} />
+      <Board tasks={tasks} onOpen={openEdit} />
+
+      {editing && (
+        <TaskModal
+          key={editing.task.id}
+          task={editing.task}
+          isNew={editing.isNew}
+          onSave={saveTask}
+          onDelete={deleteTask}
+          onClose={close}
+        />
+      )}
     </div>
   );
 }
