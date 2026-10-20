@@ -1,7 +1,8 @@
 import { TEAM } from '../lib/constants.js';
 import { formatShort } from '../lib/dates.js';
+import { DUE_STYLE, dueLabel, dueState } from '../lib/due.js';
 import Avatar from './Avatar.jsx';
-import { BugIcon, SparklesIcon } from './Icons.jsx';
+import { BugIcon, ClockIcon, SparklesIcon } from './Icons.jsx';
 
 // M6 tag-style: feature vs. bug visual distinction.
 const TYPE_STYLE = {
@@ -12,6 +13,7 @@ const TYPE_STYLE = {
 /** One task on the board. */
 export default function TaskCard({ task, onOpen, onHandoff }) {
   const type = TYPE_STYLE[task.type] ?? TYPE_STYLE.feature;
+  const due = DUE_STYLE[dueState(task)]; // M8 due-tint
   const stop = (e) => e.stopPropagation();
 
   return (
@@ -20,7 +22,7 @@ export default function TaskCard({ task, onOpen, onHandoff }) {
       tabIndex={0}
       onClick={() => onOpen(task)}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onOpen(task))}
-      className={`group w-full cursor-pointer rounded-lg border border-l-4 border-stone-200 ${type.stripe} bg-surface-card p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary`}
+      className={`group w-full cursor-pointer rounded-lg border border-l-4 border-stone-200 ${type.stripe} ${due.card} p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary`}
     >
       <span
         className={`mb-2 inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] font-medium ${type.badge}`}
@@ -52,7 +54,15 @@ export default function TaskCard({ task, onOpen, onHandoff }) {
             ))}
           </select>
         </label>
-        {task.dueDate && <span className="shrink-0">{formatShort(task.dueDate)}</span>}
+        {task.dueDate && (
+          <span
+            title={formatShort(task.dueDate)}
+            className={`inline-flex shrink-0 items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] font-medium ${due.chip}`}
+          >
+            <ClockIcon width={11} height={11} />
+            {dueLabel(task)}
+          </span>
+        )}
       </div>
     </article>
   );
