@@ -20,6 +20,9 @@ import Toast, { useToast } from './components/Toast.jsx';
  * @property {string} assignee
  * @property {string|null} dueDate     ISO 'YYYY-MM-DD'
  * @property {string} createdDate      ISO 'YYYY-MM-DD'
+ * @property {string} context          M9 — curated briefing for the next AI / teammate
+ * @property {string|null} contextTool M9 — 'Claude' | 'ChatGPT' | 'Cursor' | 'Lovable' | 'Replit' | 'Other'
+ * @property {string|null} contextUpdatedAt M9 — ISO timestamp, set on save
  */
 
 export { STAGES, TEAM };

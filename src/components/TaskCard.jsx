@@ -34,6 +34,11 @@ export default function TaskCard({ task, onOpen, onHandoff }) {
       {task.description && (
         <p className="mt-1 line-clamp-2 text-xs text-ink-muted">{task.description}</p>
       )}
+      {task.context?.trim() && (
+        <p className="mt-2 inline-flex items-center gap-1 rounded bg-brand-primary/5 px-1.5 py-0.5 font-mono text-[11px] text-brand-primary">
+          ✦ context{task.contextTool ? ` · ${task.contextTool}` : ''}
+        </p>
+      )}
 
       <div className="mt-3 flex items-center justify-between gap-2 text-xs text-ink-muted">
         {/* M7 task-owner: badge + one-dropdown handoff */}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { STAGES, TEAM, TASK_TYPES } from '../lib/constants.js';
+import { CONTEXT_TOOLS, STAGES, TEAM, TASK_TYPES } from '../lib/constants.js';
 import { newId, todayISO } from '../lib/dates.js';
 
 const inputCls =
@@ -17,7 +17,25 @@ export function blankTask(status = 'todo') {
     assignee: TEAM[0],
     dueDate: null,
     createdDate: todayISO(),
+    context: '',
+    contextTool: null,
+    contextUpdatedAt: null,
   };
+}
+
+/** Normalise a draft before saving; stamps contextUpdatedAt when the context changes (M9). */
+function finalise(draft, original) {
+  const out = {
+    ...draft,
+    title: draft.title.trim(),
+    dueDate: draft.dueDate || null,
+    context: draft.context ?? '',
+    contextTool: draft.contextTool || null,
+  };
+  const contextChanged =
+    out.context !== (original.context ?? '') || out.contextTool !== (original.contextTool ?? null);
+  out.contextUpdatedAt = contextChanged ? new Date().toISOString() : original.contextUpdatedAt ?? null;
+  return out;
 }
 
 /**
@@ -39,7 +57,7 @@ export default function TaskModal({ task, isNew, onSave, onDelete, onClose }) {
   const submit = (e) => {
     e.preventDefault();
     if (!draft.title.trim()) return;
-    onSave({ ...draft, title: draft.title.trim(), dueDate: draft.dueDate || null });
+    onSave(finalise(draft, task));
   };
 
   return (
@@ -127,7 +145,39 @@ export default function TaskModal({ task, isNew, onSave, onDelete, onClose }) {
               />
             </div>
           </div>
-          {/* MODAL_EXTRA_FIELDS */}
+
+          {/* M9 context: curated briefing for the next AI / teammate */}
+          <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <label className={labelCls + ' mb-0'} htmlFor="context">
+                Context <span className="normal-case tracking-normal text-stone-400">· the briefing for whoever picks this up next</span>
+              </label>
+              <select
+                aria-label="Context tool"
+                className="rounded-md border border-stone-300 bg-white px-2 py-1 text-xs text-ink focus:border-brand-primary focus:outline-none"
+                value={draft.contextTool ?? ''}
+                onChange={set('contextTool')}
+              >
+                <option value="">Tool…</option>
+                {CONTEXT_TOOLS.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+            <textarea
+              id="context"
+              rows={7}
+              className={inputCls + ' font-mono text-[13px] leading-relaxed'}
+              value={draft.context ?? ''}
+              onChange={set('context')}
+              placeholder={'Goal: …\nWhat works so far: …\nThe prompt that got us here: …\nNext step / where it breaks: …'}
+            />
+            <p className="mt-1.5 text-xs text-ink-muted">
+              {draft.contextUpdatedAt
+                ? `Last updated ${new Date(draft.contextUpdatedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}`
+                : 'Not written yet — paste the prompt that worked and what to try next.'}
+            </p>
+          </div>
         </div>
 
         <footer className="flex items-center justify-between gap-3 border-t border-stone-200 bg-stone-50 px-6 py-4">

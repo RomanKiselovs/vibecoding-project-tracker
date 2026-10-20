@@ -17,6 +17,9 @@ export const TASK_TYPES = [
   { id: 'bug', label: 'Bug' },
 ];
 
+// M9 context: where the context block came from / is headed.
+export const CONTEXT_TOOLS = ['Claude', 'ChatGPT', 'Cursor', 'Lovable', 'Replit', 'Other'];
+
 export const STORAGE_KEYS = {
   tasks: 'vibetracker.tasks',
   anchors: 'vibetracker.anchors',
