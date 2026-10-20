@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { STAGES, TEAM, STORAGE_KEYS } from './lib/constants.js';
 import { seedTasks } from './lib/seed.js';
+import AnchorBoard, { DEFAULT_ANCHORS } from './components/AnchorBoard.jsx';
 import Board from './components/Board.jsx';
 import TaskModal, { blankTask } from './components/TaskModal.jsx';
 import Toast, { useToast } from './components/Toast.jsx';
@@ -55,6 +56,7 @@ export function useLocalStorage(key, initialValue) {
 
 export default function App() {
   const [tasks, setTasks] = useLocalStorage(STORAGE_KEYS.tasks, seedTasks);
+  const [anchors, setAnchors] = useLocalStorage(STORAGE_KEYS.anchors, DEFAULT_ANCHORS);
   // { task, isNew } while the modal is open, otherwise null.
   const [editing, setEditing] = useState(null);
   const [toast, showToast] = useToast();
@@ -109,6 +111,8 @@ export default function App() {
           + New task
         </button>
       </header>
+
+      <AnchorBoard anchors={anchors} onChange={setAnchors} />
 
       <Board tasks={tasks} onOpen={openEdit} onHandoff={handoff} onCopyPrompt={copyPrompt} />
 
