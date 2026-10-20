@@ -102,6 +102,15 @@ export default function App() {
     showToast(ok ? 'Standup copied. Drop it in the team chat.' : "Couldn't reach the clipboard — try again.", 'accent');
   };
 
+  // M13 pitch-ready: one click back to a clean demo board before going on stage.
+  const [confirmReset, setConfirmReset] = useState(false);
+  const resetDemo = () => {
+    setTasks(seedTasks());
+    setAnchors(DEFAULT_ANCHORS);
+    setConfirmReset(false);
+    showToast('Demo board loaded. Break a leg.');
+  };
+
   const deleteTask = (id) => {
     setTasks((all) => all.filter((t) => t.id !== id));
     close();
@@ -153,6 +162,27 @@ export default function App() {
           onCopyPrompt={copyPrompt}
         />
       )}
+
+      <footer className="mt-8 flex items-center justify-between border-t border-stone-200 pt-4 text-xs text-ink-muted">
+        <span>
+          {tasks.length} tasks · {tasks.filter((t) => t.status === 'done').length} done · saved in this browser
+        </span>
+        {confirmReset ? (
+          <span className="flex items-center gap-2">
+            Replace the board with the demo dataset?
+            <button type="button" onClick={resetDemo} className="rounded bg-brand-primary px-2 py-1 font-medium text-white">
+              Load demo
+            </button>
+            <button type="button" onClick={() => setConfirmReset(false)} className="rounded px-2 py-1 hover:bg-stone-200">
+              Cancel
+            </button>
+          </span>
+        ) : (
+          <button type="button" onClick={() => setConfirmReset(true)} className="rounded px-2 py-1 hover:bg-stone-200">
+            Load demo data
+          </button>
+        )}
+      </footer>
 
       <Toast toast={toast} />
     </div>

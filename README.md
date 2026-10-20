@@ -1,4 +1,12 @@
-# Vibecoding Project Tracker — Hackathon Starter
+# VibeTrack — Vibecoding Project Tracker
+
+> Every task remembers the prompt that built it.
+
+**Features:** four-stage Kanban with drag-and-drop · feature/bug colour coding · assignee badges with one-click handoff · due-date tinting · a curated Context field on every task · **Copy as Prompt Context** · one-click team **standup** · a Deliverable Anchor Board · **Load demo data** for the pitch. Demo click path: [`PITCH.md`](PITCH.md).
+
+---
+
+## Hackathon starter notes
 
 You're forking this repo as the starting point for the **UXD Vibecoding Hackathon 2026**. The goal of the hackathon is to ship a Vibecoding Project Tracker in ~3 hours: a Kanban-style tool that tracks your vibecoding tasks and stores the prompts that produced them.
 
