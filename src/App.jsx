@@ -57,6 +57,13 @@ export function useLocalStorage(key, initialValue) {
 
 export default function App() {
   const [tasks, setTasks] = useLocalStorage(STORAGE_KEYS.tasks, seedTasks);
+
+  // If the team list changed, reassign tasks whose owner is no longer on it.
+  useEffect(() => {
+    if (tasks.some((t) => !TEAM.includes(t.assignee))) {
+      setTasks((all) => all.map((t) => (TEAM.includes(t.assignee) ? t : { ...t, assignee: TEAM[0] })));
+    }
+  }, [tasks, setTasks]);
   const [anchors, setAnchors] = useLocalStorage(STORAGE_KEYS.anchors, DEFAULT_ANCHORS);
   // { task, isNew } while the modal is open, otherwise null.
   const [editing, setEditing] = useState(null);

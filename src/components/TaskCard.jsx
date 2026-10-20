@@ -62,24 +62,31 @@ export default function TaskCard({ task, onOpen, onHandoff, onCopyPrompt }) {
       )}
 
       <div className="mt-3 flex items-center justify-between gap-2 text-xs text-ink-muted">
-        {/* M7 task-owner: badge + one-dropdown handoff */}
-        <label className="flex min-w-0 items-center gap-1.5" onClick={stop} title="Hand off to…">
-          <Avatar name={task.assignee} />
-          <select
-            aria-label="Hand off to"
-            value={task.assignee}
-            onClick={stop}
-            onKeyDown={stop}
-            onChange={(e) => onHandoff(task, e.target.value)}
-            className="min-w-0 cursor-pointer truncate rounded bg-transparent py-0.5 pr-1 text-xs text-ink-muted hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
-          >
-            {TEAM.map((name) => (
-              <option key={name} value={name}>
-                {name === task.assignee ? name : `Hand off to ${name}`}
-              </option>
-            ))}
-          </select>
-        </label>
+        {/* M7 task-owner: badge + one-dropdown handoff (handoff only when there's someone to hand to) */}
+        {TEAM.length > 1 ? (
+          <label className="flex min-w-0 items-center gap-1.5" onClick={stop} title="Hand off to…">
+            <Avatar name={task.assignee} />
+            <select
+              aria-label="Hand off to"
+              value={task.assignee}
+              onClick={stop}
+              onKeyDown={stop}
+              onChange={(e) => onHandoff(task, e.target.value)}
+              className="min-w-0 cursor-pointer truncate rounded bg-transparent py-0.5 pr-1 text-xs text-ink-muted hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+            >
+              {TEAM.map((name) => (
+                <option key={name} value={name}>
+                  {name === task.assignee ? name : `Hand off to ${name}`}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <span className="flex min-w-0 items-center gap-1.5">
+            <Avatar name={task.assignee} />
+            <span className="truncate">{task.assignee}</span>
+          </span>
+        )}
         {task.dueDate && (
           <span
             title={formatShort(task.dueDate)}

@@ -7,7 +7,8 @@ import { daysFromToday } from './dates.js';
  * @returns {import('../App.jsx').Task[]}
  */
 export function seedTasks() {
-  const [a, b, c] = TEAM;
+  // Works for a solo project or a team: falls back to the first name.
+  const [a, b = a, c = a] = TEAM;
   return [
     {
       id: 'seed-1',

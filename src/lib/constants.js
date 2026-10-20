@@ -9,8 +9,9 @@ export const STAGES = [
   { id: 'done', label: 'Done' },
 ];
 
-// The three names from PRD §8. They are the only valid values for `Task.assignee`.
-export const TEAM = ['Romans Kiselovs', 'Teammate B', 'Teammate C'];
+// The names from PRD §8. They are the only valid values for `Task.assignee`.
+// Solo project: one name. Add more and the handoff dropdown appears automatically.
+export const TEAM = ['Romans Kiselovs'];
 
 export const TASK_TYPES = [
   { id: 'feature', label: 'Feature' },

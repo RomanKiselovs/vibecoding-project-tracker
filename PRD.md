@@ -18,7 +18,7 @@ A spreadsheet doesn't solve this. A real project tool (Linear, Jira, Notion) is 
 - **Primary:** the team members, for the remaining weeks of the summer semester.
 - **Secondary:** future cohorts of vibecoders taking the same class.
 
-We are designing the tool we ourselves will use. The pitch demo is also our first real user test.
+I am designing the tool I will use myself (solo project). The pitch demo is also our first real user test.
 
 ## 3. Product overview
 
@@ -91,15 +91,13 @@ Four columns, in this order, with these exact labels in the UI:
 
 ## 8. Team
 
-Fill these in before tagging `prd-done`:
+Solo project — one person covers all three tracks.
 
 | Slot | Name | GitHub handle |
 |---|---|---|
-| Teammate A | Romans Kiselovs | `@RomanKiselovs` |
-| Teammate B | Teammate B *(replace with name)* | `@handle` |
-| Teammate C | Teammate C *(replace with name)* | `@handle` |
+| Teammate A / B / C | Romans Kiselovs | `@RomanKiselovs` |
 
-These three names become the **only** allowed values for `Task.assignee`. No auth — just a dropdown.
+This name is the **only** allowed value for `Task.assignee`. No auth. The handoff dropdown (M7) appears automatically if more names are added to `TEAM` in `src/lib/constants.js`; with one person, cards show the owner badge only.
 
 ## 9. Milestone ownership
 
@@ -107,17 +105,17 @@ Fill in the owner column. Recommended default in **bold**; change if your team h
 
 | # | Tag | Title | Suggested owner | Final owner |
 |---|---|---|---|---|
-| 3 | `design-done` | Design system + voice (DESIGN.md) | **B** | B |
-| 4 | `data-model` | Task model + board view | **A** | A |
-| 5 | `crud-modal` | Add / edit / delete modal | **A** | A |
-| 6 | `tag-style` | Feature / bug colors | **B** | B |
-| 7 | `task-owner` | Owner indicator + handoff | **A** | A |
-| 8 | `due-tint` | Due-date color tinting | **B** | B |
-| 9 | `context` | Context field on the task modal | **C** | C |
-| 10 | `copy-prompt` | "Copy as Prompt Context" button | **C** | C |
-| 11 | `anchors` / `project-deliverables` | Deliverable Anchor Board | **B** | B |
-| 12 | `secret-sauce` | The one thing that makes it yours | **C / All** | C / All |
-| 13 | `pitch-ready` | Demo + pitch rehearsal | **All** | All |
+| 3 | `design-done` | Design system + voice (DESIGN.md) | **B** | Romans Kiselovs |
+| 4 | `data-model` | Task model + board view | **A** | Romans Kiselovs |
+| 5 | `crud-modal` | Add / edit / delete modal | **A** | Romans Kiselovs |
+| 6 | `tag-style` | Feature / bug colors | **B** | Romans Kiselovs |
+| 7 | `task-owner` | Owner indicator + handoff | **A** | Romans Kiselovs |
+| 8 | `due-tint` | Due-date color tinting | **B** | Romans Kiselovs |
+| 9 | `context` | Context field on the task modal | **C** | Romans Kiselovs |
+| 10 | `copy-prompt` | "Copy as Prompt Context" button | **C** | Romans Kiselovs |
+| 11 | `anchors` / `project-deliverables` | Deliverable Anchor Board | **B** | Romans Kiselovs |
+| 12 | `secret-sauce` | The one thing that makes it yours | **C / All** | Romans Kiselovs |
+| 13 | `pitch-ready` | Demo + pitch rehearsal | **All** | Romans Kiselovs |
 
 
 Track A owns the state model and task ownership. Track B owns the visuals (and design — M3 runs parallel to M2 so the team starts Phase 3 with the palette already chosen). Track C owns the differentiator features (M9 + M10 — the context field and the Copy-as-Prompt button) and usually leads on M12 secret-sauce. Put your strongest prompter on Track C.
